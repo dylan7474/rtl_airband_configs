@@ -1,0 +1,68 @@
+devices: (
+  {
+    type = "rtlsdr";
+    index = 0;
+    gain = 37;
+    correction = 56;
+
+    mode = "scan";
+    scan_delay = 0.05;   # faster hops
+    hold_time  = 6.0;    # how long to linger on activity
+
+    channels: (
+      {
+        # --- merged static + stepped range (12.5 kHz) ---
+        freqs = (
+          124375000,    # AM Teesside Tower
+          118850000,    # AM Teesside Approach
+          145500000,    # NFM 2m Simplex
+          145550000,    # NFM 2m
+          156000000,    # NFM Marine
+          433500000,    # NFM UHF 70cm
+
+          # 2m mini band scan (exclude 145.500 & 145.550 to avoid dupes)
+          145512500,
+          145525000,
+          145537500,
+          145562500,
+          145575000,
+          145587500,
+          145600000
+        );
+
+        # per-frequency demodulators (index-aligned with 'freqs')
+        modulations = (
+          "am", "am",
+          "nfm", "nfm", "nfm", "nfm",
+          "nfm","nfm","nfm","nfm","nfm","nfm","nfm"
+        );
+
+        # bandwidth per frequency (AM ~12 kHz, NFM ~12.5 kHz)
+        bandwidth = (
+          12000, 12000,
+          12500, 12500, 12500, 12500,
+          12500, 12500, 12500, 12500, 12500, 12500, 12500
+        );
+
+        squelch_snr_threshold = 3;
+
+        outputs: (
+          {
+            type = "icecast";
+            server = "127.0.0.1";
+            port = 8000;
+            mountpoint = "scan_all";
+            username = "source";
+            password = "Pa$$w0rd!";
+            format = "mp3";
+            bitrate = 32;
+            mono = true;
+            name = "Scan: ATC AM + 2m/Marine/UHF NFM + 2m 12.5kHz sweep";
+            description = "124.375/118.850 AM + 145/156/433 NFM with 145.500–145.600 12.5kHz steps";
+            public = false;
+          }
+        );
+      }
+    );
+  }
+);
