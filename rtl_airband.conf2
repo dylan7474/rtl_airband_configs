@@ -1,0 +1,65 @@
+devices: (
+  {
+    type = "rtlsdr";
+    index = 0;
+    gain = 37;
+    correction = 56;
+
+    mode = "scan";
+    scan_delay = 0.10;
+    hold_time = 8.0;
+
+    channels: (
+      {
+        # --- frequencies to scan ---
+        freqs = (
+          124375000,   # AM Teesside Tower
+          118850000,   # AM Teesside Approach
+          145500000,   # NFM 2m Simplex
+          145550000,   # NFM 2m Repeater Input?
+          156000000    # NFM Marine
+        );
+
+        # --- matching modulations ---
+        modulations = (
+          "am", "am", "nfm", "nfm", "nfm"
+        );
+
+        # --- matching labels for Icecast metadata ---
+        labels = (
+          "Teesside Tower 124.375",
+          "Teesside Approach 118.850",
+          "2m Simplex 145.500",
+          "2m 145.550",
+          "Marine 156.000"
+        );
+
+        # --- optional matching bandwidths ---
+        bandwidth = (
+          12000, 12000, 12500, 12500, 12500
+        );
+
+        # --- squelch setting ---
+        squelch_snr_threshold = 3;
+
+        outputs: (
+          {
+            type = "icecast";
+            server = "127.0.0.1";
+            port = 8000;
+            mountpoint = "airbands";
+            username = "source";
+            password = "Pa$$w0rd!";
+            format = "mp3";
+            bitrate = 32;
+            mono = true;
+            name = "Scan: 124.375 / 118.850 (AM) + 145.500 / 145.550 / 156.000 (NFM)";
+            description = "AM ATC + NFM (2m & Marine) scan";
+            genre = "ATC/FM";
+            public = false;
+          }
+        );
+      }
+    );
+  }
+);
