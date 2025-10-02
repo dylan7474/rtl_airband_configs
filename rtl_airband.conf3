@@ -1,0 +1,42 @@
+devices: (
+  {
+    type = "rtlsdr";
+    index = 0;
+    gain = 37;
+    correction = 56;
+
+    mode = "scan";
+    scan_delay = 0.05;      # time between hops
+    hold_time = 6.0;        # how long to stay on an active signal
+
+    channels: (
+      {
+        modulation = "nfm";
+        bandwidth  = 12500;
+        squelch_snr_threshold = 3;
+
+        # --- Range scan ---
+        scan_from = 145500000;
+        scan_to   = 145600000;
+        scan_step = 12500;
+
+        outputs: (
+          {
+            type = "icecast";
+            server = "127.0.0.1";
+            port = 8000;
+            mountpoint = "bandscan_2m";
+            username = "source";
+            password = "Pa$$w0rd!";
+            format = "mp3";
+            bitrate = 32;
+            mono = true;
+            name = "2m Band Scan (145.500–145.600 MHz)";
+            description = "NFM scan in 12.5 kHz steps";
+            public = false;
+          }
+        );
+      }
+    );
+  }
+);
