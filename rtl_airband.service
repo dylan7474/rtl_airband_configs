@@ -1,11 +1,10 @@
-rtl_airband.service 
 [Unit]
 Description=RTLSDR-Airband Scanner
 After=icecast2.service
 Requires=icecast2.service
 
 [Service]
-ExecStart=/usr/local/bin/rtl_airband -F -e -c /usr/local/etc/rtl_airband.conf
+ExecStart=/usr/local/bin/rtl_airband -F -e -c /usr/local/etc/rtl_airband3.conf
 Restart=always
 RestartSec=10
 

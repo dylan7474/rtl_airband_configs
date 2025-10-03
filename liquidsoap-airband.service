@@ -1,0 +1,19 @@
+[Unit]
+Description=Liquidsoap Airband Re-encoder for ESP32
+# This service requires the original rtl_airband stream to be active.
+Requires=rtl_airband.service
+After=rtl_airband.service
+
+[Service]
+Type=simple
+# The liquidsoap process will run as the 'liquidsoap' user for security.
+User=liquidsoap
+Group=liquidsoap
+ExecStart=/usr/bin/liquidsoap /etc/liquidsoap/airband.liq
+Restart=always
+RestartSec=10
+# The working directory should be where the user has write permissions for logging.
+WorkingDirectory=/var/log/liquidsoap
+
+[Install]
+WantedBy=multi-user.target

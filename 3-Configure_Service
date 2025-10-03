@@ -1,0 +1,70 @@
+#!/bin/bash
+set -e
+
+echo "📝 Creating rtl_airband.conf for streaming to Icecast2..."
+sudo tee /usr/local/etc/rtl_airband.conf >/dev/null <<'EOF'
+devices: (
+  {
+    type = "rtlsdr";
+    index = 0;
+    gain = 37;
+    correction = 56;
+
+    mode = "scan";
+    scan_delay = 0.10;
+    hold_time = 8.0;
+
+    channels: (
+      {
+        modulation = "am";
+        bandwidth = 12000;
+        squelch_snr_threshold = 3;
+
+        freqs = ( 124375000, 118850000 );
+
+        outputs: (
+          {
+            type = "icecast";
+            server = "127.0.0.1";
+            port = 8000;
+            mountpoint = "airbands";
+            username = "source";
+            password = "Pa$$w0rd!";
+            format = "mp3";
+            bitrate = 32;
+            mono = true;
+            name = "Teesside ATC (Scan 124.375 / 118.850)";
+            description= "Live ATC (AM) — Tower & Approach";
+            genre = "ATC";
+            public = false;
+          }
+        );
+      }
+    );
+  }
+);
+EOF
+
+echo "🚀 Creating and enabling rtl_airband service..."
+sudo tee /etc/systemd/system/rtl_airband.service >/dev/null <<'EOF'
+[Unit]
+Description=RTLSDR-Airband Scanner
+After=icecast2.service
+Requires=icecast2.service
+
+[Service]
+ExecStart=/usr/local/bin/rtl_airband -F -e -c /usr/local/etc/rtl_airband.conf
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+echo "Applying systemd changes..."
+sudo systemctl daemon-reload
+sudo systemctl enable rtl_airband
+sudo systemctl start rtl_airband
+
+echo "✅ rtl_airband service configured and started."
+echo "You can now check the stream by navigating to http://<RaspberryPi_IP>:8000/airbands"

@@ -1,0 +1,15 @@
+[Unit]
+Description=FFmpeg Airband Stream Cleaner
+#After=liquidsoap-airband.service
+#Requires=liquidsoap-airband.service
+
+[Service]
+User=root
+ExecStartPre=/bin/sleep 5
+#ExecStart=/usr/bin/ffmpeg -re -i http://127.0.0.1:8000/airband -c:a libmp3lame -b:a 96k -ar 44100 -ac 2 -f mp3 -content_type audio/mpeg 'icecast://source:Pa$$$$w0rd!@127.0.0.1:8000/airband_clean'
+ExecStart=/usr/bin/ffmpeg -re -i http://127.0.0.1:8000/airbands -c:a libmp3lame -b:a 48k -ar 22050 -ac 2 -f mp3 -content_type audio/mpeg 'icecast://source:Pa$$$$w0rd!@127.0.0.1:8000/airband_clean'
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

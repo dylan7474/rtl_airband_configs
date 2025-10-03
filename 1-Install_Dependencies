@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+
+# Update package list and install dependencies
+echo "🚀 Updating system and installing dependencies..."
+sudo apt-get update && sudo apt-get install -y \
+  git build-essential cmake libmp3lame-dev libshout3-dev \
+  libasound2-dev ffmpeg rtl-sdr pkg-config jq \
+  icecast2 netcat-openbsd libconfig++-dev librtlsdr-dev libfftw3-dev liquidsoap
+
+echo "✅ All dependencies installed."
+
+# Configure Icecast password from the command line
+echo "📝 Configuring Icecast password..."
+sudo sed -i 's|<source-password>.*</source-password>|<source-password>Pa$$w0rd!</source-password>|' /etc/icecast2/icecast.xml
+sudo sed -i 's|<relay-password>.*</relay-password>|<relay-password>Pa$$w0rd!</relay-password>|' /etc/icecast2/icecast.xml
+sudo sed -i 's|<admin-password>.*</admin-password>|<admin-password>Pa$$w0rd!</admin-password>|' /etc/icecast2/icecast.xml
+
+# Restart Icecast to apply the new configuration
+sudo systemctl restart icecast2
+
+echo "✅ Icecast configured and restarted."

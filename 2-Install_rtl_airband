@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+echo "🔧 Building and installing rtl_airband..."
+
+# Clone the repository if it doesn't exist
+if [ ! -d rtl_airband ]; then
+  git clone https://github.com/szpajder/RTLSDR-Airband.git rtl_airband
+fi
+cd rtl_airband
+git pull
+
+# Correct file ownership before building
+sudo chown -R djones:djones .
+
+# Clean and rebuild to ensure all features are included
+mkdir -p build && cd build
+make clean || true
+cmake .. -DWITH_WBFM=ON -DWITH_SSBD=ON -DNFM=ON
+make -j$(nproc)
+sudo make install
+
+echo "✅ rtl_airband built and installed."
