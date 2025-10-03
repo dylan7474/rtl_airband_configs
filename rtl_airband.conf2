@@ -11,36 +11,26 @@ devices: (
 
     channels: (
       {
-        # --- frequencies to scan ---
-        freqs = (
-          124375000,   # AM Teesside Tower
-          118850000,   # AM Teesside Approach
-          145500000,   # NFM 2m Simplex
-          145550000,   # NFM 2m Repeater Input?
-          156000000    # NFM Marine
-        );
+        # Order matters: freqs, modulations, labels align by index
+        freqs = ( 124375000, 118850000, 145500000, 156000000 );
+        modulations = ( "am", "am", "nfm", "nfm" );
 
-        # --- matching modulations ---
-        modulations = (
-          "am", "am", "nfm", "nfm", "nfm"
-        );
-
-        # --- matching labels for Icecast metadata ---
+        # Optional: per-freq labels show up as Icecast metadata
         labels = (
           "Teesside Tower 124.375",
           "Teesside Approach 118.850",
           "2m Simplex 145.500",
-          "2m 145.550",
           "Marine 156.000"
         );
 
-        # --- optional matching bandwidths ---
-        bandwidth = (
-          12000, 12000, 12500, 12500, 12500
-        );
-
-        # --- squelch setting ---
+        # Squelch by SNR for all
         squelch_snr_threshold = 3;
+
+        # Optional: per-freq bandwidths (AM ~12 kHz, NFM ~12–15 kHz)
+        bandwidth = ( 12000, 12000, 12500, 12500 );
+
+        # NFM de-emphasis uses 'tau' if you want to tune it later (defaults exist). :contentReference[oaicite:1]{index=1}
+        # tau = 200;
 
         outputs: (
           {
@@ -53,7 +43,7 @@ devices: (
             format = "mp3";
             bitrate = 32;
             mono = true;
-            name = "Scan: 124.375 / 118.850 (AM) + 145.500 / 145.550 / 156.000 (NFM)";
+            name = "Scan: 124.375 / 118.850 (AM) + 145.500 / 156.000 (NFM)";
             description = "AM ATC + NFM (2m & Marine) scan";
             genre = "ATC/FM";
             public = false;
